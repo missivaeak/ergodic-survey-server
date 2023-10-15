@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/e84986fb-5b4d-4c35-825f-ca341f76b6f4/resourceGroups/ergodic-survey-server-group/providers/Microsoft.Web/sites/ergodic-survey-server",
+    "appService.deploySubpath": "."
+}
