@@ -1,13 +1,17 @@
+'use strict';
+
 import createError from 'http-errors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import 'dotenv/config';
+import cors from 'cors';
 
 import indexRouter from './routes/index.js';
 
 const app = express();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -26,9 +30,12 @@ app.use(function(err, req, res, next) {
   const message = err.message;
   const error = req.app.get('env') === 'development' ? err : {};
 
+  console.log(err)
   // render the error page
-  res.status(err.status || 500);
-  res.json(message, error);
+  // res.status(err.status || 500);
+  // res.json(message, error);
+  
+  return res.status(err);
 });
 
 export default app;

@@ -1,18 +1,21 @@
 {
-  "name": "ergodic-survey-server",
-  "version": "0.0.0",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "start": "NODE_ENV=production node ./bin/www.js",
-    "dev": "NODE_ENV=development nodemon ./bin/www.js"
-  },
-  "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
-  }
+    "name": "ergodic-survey-server",
+    "version": "0.0.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "start": "NODE_ENV=production node ./bin/www.js",
+        "dev": "NODE_ENV=development nodemon ./bin/www.js"
+    },
+    "dependencies": {
+        "cookie-parser": "~1.4.4",
+        "cors": "^2.8.5",
+        "debug": "~2.6.9",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "http-errors": "~1.6.3",
+        "morgan": "~1.9.1",
+        "sequelize": "^6.33.0",
+        "sqlite3": "^5.1.6"
+    }
 }
