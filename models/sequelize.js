@@ -32,7 +32,7 @@ Chapter.init({
 
 Response.init({
     code: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true
     },
     pending: {

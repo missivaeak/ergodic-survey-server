@@ -35,7 +35,7 @@ export default {
         if (!response.pending) {
             return {
                 success: false,
-                message: "Cannot change committed responses."
+                error: "Cannot change committed responses."
             }
         }
 
@@ -71,5 +71,33 @@ export default {
                 responseChapters: await response.getChapters()
             }
         }
+    },
+
+    getAvailableCode: async function() {
+        let code;
+
+        try {
+            while (true) {
+                code = Math.floor(Math.random() * 100000000);
+                code = ('00000000' + code).slice(-8)
+
+                const find = await Response.findAll({ where: { code } })
+
+                if (find.length === 0) {
+                    break
+                }
+            }
+
+            return {
+                success: true,
+                data: { code }
+            }
+        } catch(error) {
+            return {
+                success: false,
+                error
+            }
+        }
+
     }
 }
