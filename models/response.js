@@ -44,22 +44,20 @@ export default {
                 ResponseId: response.getDataValue('id'),
                 ...chapter
             }
-            let [responseChapter, created] = await ResponseChapters.findOrCreate({ 
+            let responseChapter = await ResponseChapters.find({ 
                 where: {
                     ResponseId: response.getDataValue('id'),
                     ChapterId: chapter.ChapterId
-                },
-                defaults: data
+                }
             })
 
             try {
-                if (!created) {
+                if (responseChapter) {
                     responseChapter.set(data)
                     await responseChapter.save()
+                } else {
+                    responseChapter = await ResponseChapters.create(data)
                 }
-                // } else {
-                //     responseChapter = await ResponseChapters.create(data)
-                // }
             } catch(error) {
                 return {
                     success: false,
