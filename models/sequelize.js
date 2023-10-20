@@ -8,15 +8,15 @@ const __dirname = path.dirname(__filename);
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: path.join(__dirname, '..', 'database', 'database.sqlite'),
-    retry: {
-        max: 10
-    },
-    pool: {
-        max: 50,
-        min: 0,
-        acquire: 1200000,
-        idle: 1000000,
-    }
+    // retry: {
+    //     max: 10
+    // },
+    // pool: {
+    //     max: 50,
+    //     min: 0,
+    //     acquire: 1200000,
+    //     idle: 1000000,
+    // }
 });
 
 class Chapter extends Model {}
