@@ -41,21 +41,25 @@ export default {
 
         for (const chapter of responseChaptersData.chaptersData) {
             const data = {
-                ResponseId: response.id,
+                ResponseId: response.getDataValue('id'),
                 ...chapter
             }
-            let responseChapter = await ResponseChapters.findOne({ where: {
-                ResponseId: response.id,
-                ChapterId: chapter.ChapterId
-            }})
+            let [responseChapter, created] = await ResponseChapters.findOrCreate({ 
+                where: {
+                    ResponseId: response.getDataValue('id'),
+                    ChapterId: chapter.ChapterId
+                },
+                defaults: data
+            })
 
             try {
-                if (responseChapter) {
+                if (!created) {
                     responseChapter.set(data)
                     await responseChapter.save()
-                } else {
-                    responseChapter = await ResponseChapters.create(data)
                 }
+                // } else {
+                //     responseChapter = await ResponseChapters.create(data)
+                // }
             } catch(error) {
                 return {
                     success: false,
@@ -64,17 +68,21 @@ export default {
             }
         }
 
+        // console.log(await response.getChapters({include: Chapter}))
+
         return {
             success: true,
-            data: {
-                ...response.toJSON(),
-                responseChapters: await response.getChapters()
-            }
+            // data: {
+            //     ...response.toJSON(),
+            //     responseChapters: await response.getChapters()
+            // }
+            data: await Response.findOne({where: { code }, include: Chapter})
         }
     },
 
     getAvailableCode: async function() {
         let code;
+        let response;
 
         try {
             while (true) {
@@ -84,13 +92,14 @@ export default {
                 const find = await Response.findAll({ where: { code } })
 
                 if (find.length === 0) {
+                    response = await Response.create({ code, pending: true })
                     break
                 }
             }
 
             return {
                 success: true,
-                data: { code }
+                data: response
             }
         } catch(error) {
             return {
@@ -98,6 +107,5 @@ export default {
                 error
             }
         }
-
     }
 }

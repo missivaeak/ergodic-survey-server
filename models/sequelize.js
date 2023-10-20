@@ -31,6 +31,14 @@ Chapter.init({
 
 
 Response.init({
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        get() {
+            return 0;
+        }
+    },
     code: {
         type: DataTypes.STRING,
         allowNull: true
