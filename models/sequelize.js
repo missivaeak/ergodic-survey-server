@@ -7,7 +7,10 @@ const __dirname = path.dirname(__filename);
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: path.join(__dirname, '..', 'database', 'database.sqlite')
+    storage: path.join(__dirname, '..', 'database', 'database.sqlite'),
+    retry: {
+        max: 10
+    }
 });
 
 class Chapter extends Model {}
