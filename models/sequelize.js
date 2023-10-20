@@ -87,7 +87,7 @@ Demographic.belongsToMany(Response, { through: ResponseDemographics })
 
 ResponseChapters.init({
     time: {
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER
     },
     viewed: {
         type: DataTypes.BOOLEAN,
