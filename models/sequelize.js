@@ -5,18 +5,14 @@ import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '..', 'database', 'database.sqlite'),
-    // retry: {
-    //     max: 10
-    // },
-    // pool: {
-    //     max: 50,
-    //     min: 0,
-    //     acquire: 1200000,
-    //     idle: 1000000,
-    // }
+// const sequelize = new Sequelize({
+//     dialect: 'sqlite',
+//     storage: path.join(__dirname, '..', 'database', 'database.sqlite')
+// });
+const sequelize = new Sequelize('ergodic-survey', 'missivaeak', process.env.DATABASE_PASSWORD, {
+    dialect: 'mssql',
+    host: 'ergodic-survey-server.database.windows.net',
+    dialectOptions: {}
 });
 
 class Chapter extends Model {}
