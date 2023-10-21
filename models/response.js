@@ -44,7 +44,7 @@ export default {
                 ResponseId: response.getDataValue('id'),
                 ...chapter
             }
-            let responseChapter = await ResponseChapters.find({ 
+            let responseChapter = await ResponseChapters.findOne({ 
                 where: {
                     ResponseId: response.getDataValue('id'),
                     ChapterId: chapter.ChapterId
