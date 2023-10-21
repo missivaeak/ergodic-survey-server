@@ -36,6 +36,10 @@ router.get('/response', async function(req, res, next) {
     return res.json(await response.getAll());
 });
 
+router.get('/response/:code', async function(req, res, next) {
+    return res.json(await response.getOne(req.params.code));
+});
+
 router.post('/response', async function(req, res, next) {
     return res.json(await response.setChapterData(req.body));
 });

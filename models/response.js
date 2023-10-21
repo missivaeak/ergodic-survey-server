@@ -15,6 +15,20 @@ export default {
         }
     },
 
+    getOne: async function (code) {
+        try {
+            return {
+                success: true,
+                data: await Response.findOne({where: { code }, include: Chapter})
+            }
+        } catch(error) {
+            return {
+                success: false,
+                error
+            }
+        }
+    },
+
     setChapterData: async function (responseChaptersData) {
         const code = responseChaptersData.code
         let response, _
