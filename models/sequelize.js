@@ -79,9 +79,8 @@ Demographic.init({
 })
 
 ResponseDemographics.init({
-    id: {
+    ResponseId: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         get() {
             return -1;
         }
@@ -101,7 +100,6 @@ Demographic.belongsToMany(Response, { through: ResponseDemographics })
 ResponseChapters.init({
     ResponseId: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         get() {
             return -1;
         }
