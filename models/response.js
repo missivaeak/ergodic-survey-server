@@ -51,7 +51,7 @@ export default {
         let response
 
         try {
-            response = await Response.find({where: { code }})
+            response = await Response.findOne({where: { code }})
         } catch(error) {
             return {
                 success: false,
@@ -66,8 +66,9 @@ export default {
                 error: "Cannot change committed responses."
             }
         }
-
+        // console.log(responseChaptersData)
         for (const item of responseChaptersData) {
+            // console.log(item)
             const data = {
                 ResponseId: response.getDataValue('id'),
                 ChapterId: item.ChapterId,
@@ -75,10 +76,10 @@ export default {
                 checked: item.checked,
                 time: item.time
             }
-            const responseChapter = await ResponseChapters.findOrCreate({ 
+            const [responseChapter, _] = await ResponseChapters.findOrCreate({ 
                 where: {
                     ResponseId: response.getDataValue('id'),
-                    ChapterId: chapter.ChapterId
+                    ChapterId: item.ChapterId
                 },
                 defaults: data
             })
@@ -87,6 +88,7 @@ export default {
                 responseChapter.set(data)
                 await responseChapter.save()
             } catch(error) {
+                console.log(error)
                 return {
                     success: false,
                     error
