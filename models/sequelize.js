@@ -41,7 +41,7 @@ Response.init({
         primaryKey: true,
         autoIncrement: true,
         get() {
-            return 0;
+            return -1;
         }
     },
     code: {
@@ -50,7 +50,8 @@ Response.init({
     },
     pending: {
         type: DataTypes.BOOLEAN,
-        allowNull: false
+        allowNull: false,
+        defaultValue: true
     }
 }, {
     // Other model options go here
@@ -78,6 +79,13 @@ Demographic.init({
 })
 
 ResponseDemographics.init({
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        get() {
+            return -1;
+        }
+    },
     value: {
         type: DataTypes.STRING
     }
@@ -91,16 +99,26 @@ Response.belongsToMany(Demographic, { through: ResponseDemographics })
 Demographic.belongsToMany(Response, { through: ResponseDemographics })
 
 ResponseChapters.init({
+    ResponseId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        get() {
+            return -1;
+        }
+    },
     time: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     },
     viewed: {
         type: DataTypes.BOOLEAN,
-        allowNull: false
+        allowNull: false,
+        defaultValue: false
     },
     checked: {
         type: DataTypes.BOOLEAN,
-        allowNull: false
+        allowNull: false,
+        defaultValue: false
     }
 }, {
         // Other model options go here

@@ -2,10 +2,20 @@ import { sequelize, Response, Chapter, ResponseChapters } from "./sequelize.js";
 
 export default {
     getAll: async function () {
+        let data = []
+        const responses = await Response.findAll()
+        for (const response of responses) {
+            data.push({
+                response,
+                responseChapters: await ResponseChapters.findAll({where: {
+                    ResponseId: response.getDataValue('id')
+                }})
+            })
+        }
         try {
             return {
                 success: true,
-                data: await Response.findAll({include: Chapter})
+                data
             }
         } catch(error) {
             return {
@@ -17,9 +27,17 @@ export default {
 
     getOne: async function (code) {
         try {
+            const response = await Response.findOne({where: { code }})
             return {
                 success: true,
-                data: await Response.findOne({where: { code }, include: Chapter})
+                data: {
+                    response,
+                    responseChapters: await ResponseChapters.findAll({
+                        where: {
+                            ResponseId: response.getDataValue('id')
+                        }
+                    })
+                }
             }
         } catch(error) {
             return {
@@ -29,15 +47,11 @@ export default {
         }
     },
 
-    setChapterData: async function (responseChaptersData) {
-        const code = responseChaptersData.code
-        let response, _
+    setChapterData: async function (code, responseChaptersData) {
+        let response
 
         try {
-            [response, _] = await Response.findOrCreate({
-                where: { code },
-                defaults: { code, pending: true }
-            })
+            response = await Response.find({where: { code }})
         } catch(error) {
             return {
                 success: false,
@@ -53,25 +67,25 @@ export default {
             }
         }
 
-        for (const chapter of responseChaptersData.chaptersData) {
+        for (const item of responseChaptersData) {
             const data = {
                 ResponseId: response.getDataValue('id'),
-                ...chapter
+                ChapterId: item.ChapterId,
+                viewed: item.viewed,
+                checked: item.checked,
+                time: item.time
             }
-            let responseChapter = await ResponseChapters.findOne({ 
+            const responseChapter = await ResponseChapters.findOrCreate({ 
                 where: {
                     ResponseId: response.getDataValue('id'),
                     ChapterId: chapter.ChapterId
-                }
+                },
+                defaults: data
             })
 
             try {
-                if (responseChapter) {
-                    responseChapter.set(data)
-                    await responseChapter.save()
-                } else {
-                    responseChapter = await ResponseChapters.create(data)
-                }
+                responseChapter.set(data)
+                await responseChapter.save()
             } catch(error) {
                 return {
                     success: false,
@@ -80,15 +94,8 @@ export default {
             }
         }
 
-        // console.log(await response.getChapters({include: Chapter}))
-
         return {
-            success: true,
-            // data: {
-            //     ...response.toJSON(),
-            //     responseChapters: await response.getChapters()
-            // }
-            data: await Response.findOne({where: { code }, include: Chapter})
+            success: true
         }
     },
 
@@ -101,23 +108,45 @@ export default {
                 code = Math.floor(Math.random() * 100000000);
                 code = ('00000000' + code).slice(-8)
 
-                const find = await Response.findAll({ where: { code } })
+                const find = await Response.findOne({ 
+                    where: { code }
+                })
 
-                if (find.length === 0) {
+                if (!find) {
                     response = await Response.create({ code, pending: true })
                     break
                 }
             }
 
+            await populateResponseChapters(response)
+
             return {
                 success: true,
-                data: response
+                data: await Response.findByPk(response.getDataValue('id'))
             }
         } catch(error) {
+            console.log(error)
             return {
                 success: false,
                 error
             }
         }
+    }
+}
+
+async function populateResponseChapters(response) {
+    try {
+        const chapters = await Chapter.findAll()
+        for (const chapter of chapters) {
+            ResponseChapters.create({
+                ResponseId: response.getDataValue('id'),
+                ChapterId: chapter.id,
+                viewed: false,
+                checked: false,
+                time: 0
+            })
+        }
+    } catch(error) {
+        console.log(error)
     }
 }

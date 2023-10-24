@@ -41,7 +41,7 @@ router.get('/response/:code', async function(req, res, next) {
 });
 
 router.post('/response', async function(req, res, next) {
-    return res.json(await response.setChapterData(req.body));
+    return res.json(await response.setChapterData(req.body.code, req.body.responseChaptersData));
 });
 
 router.get('/code', async function(req, res, next) {
