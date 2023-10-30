@@ -66,11 +66,28 @@ Response.init({
 Demographic.init({
     question: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: ""
     },
     type: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: "text"
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ""
+    },
+    label: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ""
+    },
+    questionAlternatives: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ""
     }
 }, {
     // Other model options go here

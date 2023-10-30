@@ -2,6 +2,7 @@ import express from 'express';
 import { authenticate, sync } from '../models/sequelize.js';
 import chapter from '../models/chapter.js';
 import response from '../models/response.js'
+import demographic from '../models/demographic.js'
 
 const router = express.Router();
 
@@ -30,6 +31,14 @@ router.get('/chapter', async function(req, res, next) {
 
 router.post('/chapter', async function(req, res, next) {
     return res.json(await chapter.add(req.body))
+});
+
+router.get('/demographic', async function(req, res, next) {
+    return res.json(await demographic.getAll());
+});
+
+router.post('/demographic', async function(req, res, next) {
+    return res.json(await demographic.add(req.body))
 });
 
 router.get('/response', async function(req, res, next) {
