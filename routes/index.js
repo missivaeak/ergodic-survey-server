@@ -49,6 +49,10 @@ router.get('/response/:code', async function(req, res, next) {
     return res.json(await response.getOne(req.params.code));
 });
 
+router.post('/response/demographics', async function(req, res, next) {
+    return res.json(await response.setDemographicData(req.body.code, req.body.responseDemographicsData));
+});
+
 router.post('/response', async function(req, res, next) {
     return res.json(await response.setChapterData(req.body.code, req.body.responseChaptersData));
 });

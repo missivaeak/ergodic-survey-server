@@ -1,15 +1,18 @@
-import { sequelize, Response, Chapter, ResponseChapters } from "./sequelize.js";
+import { sequelize, Response, Chapter, ResponseChapters, ResponseDemographics } from "./sequelize.js";
 
 export default {
     getAll: async function () {
         let data = []
         const responses = await Response.findAll()
         for (const response of responses) {
+            const findPattern = { where: {
+                ResponseId: response.getDataValue('id')
+            }}
+
             data.push({
                 response,
-                responseChapters: await ResponseChapters.findAll({where: {
-                    ResponseId: response.getDataValue('id')
-                }})
+                responseChapters: await ResponseChapters.findAll(findPattern),
+                responseDemographics: await ResponseDemographics.findAll(findPattern)
             })
         }
         try {
@@ -28,15 +31,16 @@ export default {
     getOne: async function (code) {
         try {
             const response = await Response.findOne({where: { code }})
+            const findPattern = { where: {
+                    ResponseId: response.getDataValue('id')
+            }}
+
             return {
                 success: true,
                 data: {
                     response,
-                    responseChapters: await ResponseChapters.findAll({
-                        where: {
-                            ResponseId: response.getDataValue('id')
-                        }
-                    })
+                    responseChapters: await ResponseChapters.findAll(findPattern),
+                    responseDemographics: await ResponseDemographics.findAll(findPattern)
                 }
             }
         } catch(error) {
@@ -48,14 +52,12 @@ export default {
     },
 
     setChapterData: async function (code, responseChaptersData) {
-        let response
+        const response = await Response.findOne({where: { code }})
 
-        try {
-            response = await Response.findOne({where: { code }})
-        } catch(error) {
+        if (!response) {
             return {
                 success: false,
-                error
+                error: "No response with that code found."
             }
         }
 
@@ -66,9 +68,8 @@ export default {
                 error: "Cannot change committed responses."
             }
         }
-        // console.log(responseChaptersData)
+
         for (const item of responseChaptersData) {
-            // console.log(item)
             const data = {
                 ResponseId: response.getDataValue('id'),
                 ChapterId: item.ChapterId,
@@ -93,6 +94,44 @@ export default {
                     success: false,
                     error
                 }
+            }
+        }
+
+        return {
+            success: true
+        }
+    },
+
+    setDemographicData: async function (code, responseDemographicsData) {
+        const response = await Response.findOne({where: { code }})
+
+        if (!response) {
+            return {
+                success: false,
+                error: "No response with that code found."
+            }
+        }
+
+        // only pending results can be changed, return if not pending
+        if (!response.pending) {
+            return {
+                success: false,
+                error: "Cannot change committed responses."
+            }
+        }
+
+        try {
+            for (const responseDemographic of responseDemographicsData) {
+                ResponseDemographics.create({
+                    ResponseId: response.getDataValue('id'),
+                    ...responseDemographic
+                })
+            }
+        } catch(error) {
+            console.error(error)
+            return {
+                success: false,
+                error
             }
         }
 
